@@ -1,5 +1,10 @@
 # New Keys Per Release
 
+- rust-main (2025-09-03)
+  - [tools].view_image — allow attaching local images to conversations.
+  - disable_paste_burst — disable multi-line paste burst submissions in TUI.
+  - use_experimental_reasoning_summary — enable experimental reasoning summaries in UI.
+
 - rust-v0.25.0 (2025-08-27)
   - No new config keys compared to v0.24.0. This release focused on TUI polish, bug fixes, and minor exec/stream behavior.
 
@@ -45,11 +50,14 @@ network_access = false             # allow outbound network from sandbox
 file_opener = "vscode"             # Opens files in VS Code
 show_raw_agent_reasoning = true    # Show raw reasoning content (if available)
 notify = ["notify-send", "Codex"]  # Desktop notifications
+use_experimental_reasoning_summary = false  # Experimental reasoning summaries
+disable_paste_burst = false                # Prevent rapid multi-line paste submissions
 
 # Tools
 [tools]
 web_search = true                  # Enable web search
 
+view_image = true                    # Attach local images as context
 # History
 [history]
 persistence = "save-all"           # Keep conversation history

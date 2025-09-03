@@ -1,6 +1,6 @@
 # New Keys Per Release
 
-- rust-main (2025-09-03)
+- rust-v0.29.0 (2025-09-03)
   - [tools].view_image — allow attaching local images to conversations.
   - disable_paste_burst — disable multi-line paste burst submissions in TUI.
   - use_experimental_reasoning_summary — enable experimental reasoning summaries in UI.

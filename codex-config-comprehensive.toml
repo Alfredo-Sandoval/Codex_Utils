@@ -97,8 +97,6 @@ model_reasoning_effort = "high"               # "minimal" | "low" | "medium" | "
 [tools]
 # Enable the native Responses web_search tool (same as TUI --search)
 web_search = true
-# Allow attaching local images to provide visual context
-
 view_image = true
 # alias for backwards compatibility:
 # web_search_request = true

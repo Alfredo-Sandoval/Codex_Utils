@@ -36,6 +36,17 @@
 #
 # 9) responses_originator_header_internal_override = "codex_cli_rs"   # Added Aug 19, 2025
 #    Internal/testing only; do not set unless you know why.
+#
+# 10) [tools].view_image = true   # Added Sep 3, 2025
+#     Enable the view_image tool so the agent can attach local images
+#     (paths on disk) to provide extra visual context.
+#
+# 11) disable_paste_burst = false   # Added Sep 3, 2025
+#     Disable multi-line paste burst sending in the TUI chat composer
+#     (helps avoid accidental rapid submissions of pasted content).
+#
+# 12) use_experimental_reasoning_summary = false   # Added Sep 3, 2025
+#     Opt-in UI toggle to render experimental reasoning summaries in the TUI.
 # ----------------------------------------------------------------------------
 
 ####################################
@@ -55,6 +66,10 @@ sandbox_mode = "danger-full-access"                      # "read-only" | "worksp
 # hide_agent_reasoning = false
 show_raw_agent_reasoning = true
 #
+# Disable multi-line paste burst submissions in TUI composer
+disable_paste_burst = false
+# Experimental: render reasoning summaries in TUI (if supported)
+use_experimental_reasoning_summary = false
 model_reasoning_effort = "high"               # "minimal" | "low" | "medium" | "high" | "none"
 # model_reasoning_summary = "auto"                # "auto" | "concise" | "detailed" | "none"
 # model_verbosity = "medium"                      # GPT‑5 family only; "low" | "medium" | "high"
@@ -82,6 +97,9 @@ model_reasoning_effort = "high"               # "minimal" | "low" | "medium" | "
 [tools]
 # Enable the native Responses web_search tool (same as TUI --search)
 web_search = true
+# Allow attaching local images to provide visual context
+
+view_image = true
 # alias for backwards compatibility:
 # web_search_request = true
 

@@ -104,6 +104,7 @@ include_only = [
 [tools]
 # Enable the native Responses web_search tool (same as `--search`).
 web_search = true
+view_image = true                              # Allow attaching local images
 # (alias supported for backwards-compat):
 #web_search_request = true
 
@@ -120,3 +121,5 @@ persistence = "save-all"          # Keeps conversation history across sessions
 [projects."/home/alif/Documents/GitHub/codex"]
 trust_level = "trusted"           # Skip security prompts for this repo
 
+use_experimental_reasoning_summary = false   # Experimental reasoning summaries in UI
+disable_paste_burst = false                  # Prevent rapid multi-line paste submissions

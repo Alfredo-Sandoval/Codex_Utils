@@ -4,7 +4,6 @@
 # =========================
 # Rule: In each "CHOOSE ONE" block, uncomment EXACTLY ONE line.
 
-
 # -------------------------
 # Model (string)
 # -------------------------
@@ -48,11 +47,6 @@ network_access = true
 # -------------------------
 file_opener = "vscode"                    # Opens files in VS Code when clicked
 show_raw_agent_reasoning = true           # Show raw reasoning content (if available)
-
-# -------------------------
-# Desktop notifications
-# -------------------------
-notify = ["notify-send", "Codex"]         # Desktop notifications for task completion
 
 # -------------------------
 # Shell Environment Policy
@@ -109,17 +103,7 @@ view_image = true                              # Allow attaching local images
 #web_search_request = true
 
 # -------------------------
-# History persistence
-# -------------------------
-[history]
-persistence = "save-all"          # Keeps conversation history across sessions
-# max_bytes = 10485760            # Optional: limit history size
-
-# -------------------------
 # Project trust settings
 # -------------------------
 [projects."/home/alif/Documents/GitHub/codex"]
 trust_level = "trusted"           # Skip security prompts for this repo
-
-use_experimental_reasoning_summary = false   # Experimental reasoning summaries in UI
-disable_paste_burst = false                  # Prevent rapid multi-line paste submissions

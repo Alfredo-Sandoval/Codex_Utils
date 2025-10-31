@@ -1,53 +1,8 @@
  # ============================================================================
 # Codex CLI — Comprehensive Configuration Template
-# Updated: 2025-09-03
+# Updated: 2025-10-31
 # Location to use in practice: ~/.codex/config.toml (aka $CODEX_HOME/config.toml)
-# This file is SAFE to share; all entries are commented out by default.
 # ============================================================================
-
-# ----------------------------------------------------------------------------
-# NEW ENTRIES (added in this release)
-# ----------------------------------------------------------------------------
-# 1) [tools].web_search = true   # Added Aug 23, 2025
-#    Enables native web search tool. CLI flag is --search (TUI only); TOML key
-#    works for both TUI and codex-exec. Alias also accepted: web_search_request.
-#
-# 2) preferred_auth_method = "apikey" | "chatgpt"   # Added Aug 18, 2025
-#    Prefer API key or ChatGPT auth when both are present.
-#
-# 3) [projects."/abs/path"].trust_level = "trusted"   # Added Aug 7, 2025
-#    Mark specific repos trusted to reduce prompts in versioned workspaces.
-#
-# 4) model_verbosity = "low" | "medium" | "high"   # Added Aug 22, 2025
-#    Controls Responses API text verbosity for GPT‑5 family models.
-#
-# 5) Per-provider network tuning in [model_providers.<id>]   # Added Jul 18, 2025; caps Aug 25, 2025
-#    request_max_retries, stream_max_retries, stream_idle_timeout_ms.
-#    Note: only valid inside provider blocks; older top‑level keys are ignored.
-#
-# 6) show_raw_agent_reasoning = true   # Added Aug 5, 2025
-#    Surfaces raw chain‑of‑thought events when available.
-#
-# 7) shell_environment_policy.experimental_use_profile = true   # Added Jul 25, 2025
-#    Advanced: run shell commands through a profile (opt‑in).
-#
-# 8) chatgpt_base_url = "https://chatgpt.com/backend-api/"   # Added Jul 11, 2025
-#    Advanced override for ChatGPT backend URL.
-#
-# 9) responses_originator_header_internal_override = "codex_cli_rs"   # Added Aug 19, 2025
-#    Internal/testing only; do not set unless you know why.
-#
-# 10) [tools].view_image = true   # Added Sep 3, 2025
-#     Enable the view_image tool so the agent can attach local images
-#     (paths on disk) to provide extra visual context.
-#
-# 11) disable_paste_burst = false   # Added Sep 3, 2025
-#     Disable multi-line paste burst sending in the TUI chat composer
-#     (helps avoid accidental rapid submissions of pasted content).
-#
-# 12) use_experimental_reasoning_summary = false   # Added Sep 3, 2025
-#     Opt-in UI toggle to render experimental reasoning summaries in the TUI.
-# ----------------------------------------------------------------------------
 
 ####################################
 # Root (top-level) keys
@@ -58,9 +13,16 @@ model = "gpt-5"                                # default model
 # model_context_window = 200000                   # tokens; override when unknown
 # model_max_output_tokens = 100000                # tokens; override when unknown
 #
+# model_auto_compact_token_limit = 60000          # tokens; auto-compact history when exceeded
+#
 approval_policy = "never"                  # "untrusted" | "on-failure" | "on-request" | "never"
 sandbox_mode = "danger-full-access"                      # "read-only" | "workspace-write" | "danger-full-access"
 # disable_response_storage = false                # set true for ZDR accounts
+#
+# review_model = "o3"                          # Optional override for /review code review model
+# developer_instructions = "/abs/path/dev.md"  # Injected developer-role instructions (string or file path)
+# compact_prompt = "/abs/path/compact.md"      # Optional compact prompt override (string or file path)
+# log_user_prompt = true                       # Persist plaintext prompts in history (default: false)
 #
 # file_opener = "vscode"                          # "vscode" | "vscode-insiders" | "windsurf" | "cursor" | "none"
 # hide_agent_reasoning = false
@@ -72,6 +34,7 @@ disable_paste_burst = false
 use_experimental_reasoning_summary = false
 model_reasoning_effort = "high"               # "minimal" | "low" | "medium" | "high" | "none"
 # model_reasoning_summary = "auto"                # "auto" | "concise" | "detailed" | "none"
+# model_reasoning_summary_format = "auto"         # Optional format hint for reasoning (leave "auto")
 # model_verbosity = "medium"                      # GPT‑5 family only; "low" | "medium" | "high"
 # model_supports_reasoning_summaries = false      # force-enable reasoning block
 #
@@ -82,24 +45,32 @@ model_reasoning_effort = "high"               # "minimal" | "low" | "medium" | "
 # responses_originator_header_internal_override = "codex_cli_rs"  # internal/testing
 #
 # project_doc_max_bytes = 32768                    # bytes to read from AGENTS.md
+# project_doc_fallback_filenames = ["PROJECT_GUIDE.md", "PROJECT_RULES.md"]
 # preferred_auth_method = "chatgpt"                # or "apikey"
+#
+# forced_chatgpt_workspace_id = "workspace-123"    # Restrict login to a single ChatGPT workspace
+# forced_login_method = "chatgpt"                  # "chatgpt" | "api"; reject other login flows
+# cli_auth_credentials_store = "/abs/path/auth.json"       # Override path for CLI auth store
+# mcp_oauth_credentials_store = "/abs/path/mcp_auth.json"  # Override path for MCP OAuth store
 #
 # profile = "default"                              # active [profiles] entry
 #
 # instructions = "You are a helpful assistant."    # extra system instructions (merged with AGENTS.md)
 #
-# notify = ["notify-send", "Codex"]                 # program argv; Codex appends JSON payload
-
 ####################################
-# Tools (feature toggles)
+# Features (tool toggles)
 ####################################
 
-[tools]
-# Enable the native Responses web_search tool (same as TUI --search)
-web_search = true
-view_image = true
-# alias for backwards compatibility:
-# web_search_request = true
+[features]
+# web_search_request = true                 # Native Responses web search (same as --search)
+# view_image_tool = true                    # Attach local images
+# unified_exec = false                      # PTY-based exec runtime (experimental)
+# streamable_shell = false                  # Stream shell output (requires unified_exec)
+# rmcp_client = false                       # Enable MCP client support managed by the CLI
+# apply_patch_freeform = false              # Allow freeform apply_patch payloads
+# experimental_sandbox_command_assessment = false  # Risk assessment before shell execution
+# ghost_commit = false                      # Capture ghost snapshots for undo/restore
+# enable_experimental_windows_sandbox = false      # Windows-only sandbox integration
 
 ####################################
 # Shell environment policy for spawned processes
@@ -207,14 +178,22 @@ persistence = "save-all"          # "save-all" | "none"
 # trust_level = "trusted"    # mark as trusted
 
 ####################################
+# TUI preferences
+####################################
+
+# [tui]
+# hide_full_access_warning = false          # Suppress danger-full-access banner
+# windows_wsl_setup_acknowledged = false    # Windows-only: suppress WSL onboarding tip
+
+####################################
 # Quick reference: CLI overrides (for sharing/docs)
 ####################################
 # codex -c model="o3"
-# codex -c 'tools.web_search=true' "your prompt here"
+# codex -c 'features.web_search_request=true' "your prompt here"
 # codex --sandbox workspace-write --ask-for-approval on-request
 
 # Notes:
-# - The TUI flag --search maps to [tools].web_search in TOML.
+# - The TUI flag --search maps to [features].web_search_request in TOML.
 # - The built-in OpenAI provider also respects env: OPENAI_BASE_URL, OPENAI_ORGANIZATION, OPENAI_PROJECT.
 # - OSS provider can be influenced by env: CODEX_OSS_BASE_URL, CODEX_OSS_PORT (envs, not TOML).
 

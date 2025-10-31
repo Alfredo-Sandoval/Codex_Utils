@@ -1,130 +1,82 @@
-# New Keys Per Release
+# Codex Utils
 
-- rust-v0.29.0 (2025-09-03)
-  - [tools].view_image — allow attaching local images to conversations.
-  - disable_paste_burst — disable multi-line paste burst submissions in TUI.
-  - use_experimental_reasoning_summary — enable experimental reasoning summaries in UI.
+Opinionated configuration files for OpenAI Codex CLI. All configurations are in plain TOML format, allowing you to copy what you need without disrupting your existing workflow.
 
-- rust-v0.25.0 (2025-08-27)
-  - No new config keys compared to v0.24.0. This release focused on TUI polish, bug fixes, and minor exec/stream behavior.
-
-- rust-v0.24.0 (2025-08)
-  - preferred_auth_method = "apikey" | "chatgpt" — choose ChatGPT login or API key when both are available.
-  - [projects."/abs/path"].trust_level = "trusted" — mark specific repos as trusted to reduce prompts.
-  - model_verbosity = "low" | "medium" | "high" — controls text verbosity for GPT‑5 models.
-  - [model_providers.<id>].request_max_retries — per‑provider HTTP retry cap.
-  - [model_providers.<id>].stream_max_retries — per‑provider stream reconnect cap.
-  - [model_providers.<id>].stream_idle_timeout_ms — per‑provider stream idle timeout.
-  - show_raw_agent_reasoning = true — show raw reasoning content when available.
-  - [shell_environment_policy].experimental_use_profile = true — run commands through a profile shell (advanced).
-  - chatgpt_base_url = "https://chatgpt.com/backend-api/" — override ChatGPT backend URL (advanced).
-  - responses_originator_header_internal_override = "codex_cli_rs" — internal/testing only.
-  - [tools].web_search = true (alias: web_search_request) — enable native web search tool.
-
-# Codex_Utils
+---
 
 ## Quick Start
 
-1. Copy `config.toml` to `~/.codex/config.toml`
-2. Authenticate (choose one):
-   - ChatGPT sign‑in: run `codex` and choose “Sign in with ChatGPT” (no API key needed).
-   - API key: set `OPENAI_API_KEY` if you prefer usage‑based billing.
-     - macOS/Linux: `export OPENAI_API_KEY="your-key"`
-     - Windows (PowerShell): `$env:OPENAI_API_KEY="your-key"`
-3. Run: `codex`
+1. **Pick the platform template** from `configs/` and copy it to your user config:
+   - **Linux** → `configs/config.linux.toml` → `~/.codex/config.toml`
+   - **macOS** → `configs/config.macos.toml` → `~/.codex/config.toml`
+   - **Windows** → `configs/config.windows.toml` → `%USERPROFILE%\.codex\config.toml`
+2. **Authenticate**:
+   - ChatGPT login: run `codex` and select "Sign in with ChatGPT".
+   - API key: set `OPENAI_API_KEY` environment variable (`export` on Unix/macOS, `$env:` on Windows).
+3. Launch Codex: `codex`
 
-## Key Configuration Options
+Each template provides minimal defaults: GPT‑5 Codex model, high reasoning effort, full-access sandbox, and modern feature toggles (`web_search_request`, `view_image_tool`). Shell environment whitelists are customized per OS.
 
-### Core Settings
+---
+
+## What’s Included
+
+### `config.toml`
+Baseline configuration that mirrors the CLI defaults with unnecessary options removed. Highlights:
+- `model = "gpt-5"` with `model_reasoning_effort = "high"`
+- Approval policy set to `never` for fully autonomous operation
+- Shell environment policy restricted to language and runtime variables only
+- Feature toggles use the legacy `[tools]` block for backwards compatibility (`web_search`, `view_image`)
+
+### `configs/config.<platform>.toml`
+Platform-specific configurations using the newer `[features]` table for enabling/disabling tools without modifying legacy keys. Update the `[projects."<abs path>"]` entry to match your workspace before copying to your Codex home directory.
+
+### `codex-config-comprehensive.toml`
+A line-by-line reference documenting every supported configuration option in Codex CLI 0.53.0. This file contains only the configuration keys with documentation, making it easy to find and copy settings into your own config.
+
+---
+
+## Sample Snippet (modern features)
+
 ```toml
-model = "gpt-5"                    # or "o3", "o4-mini"
-model_reasoning_effort = "high"    # minimal | low | medium | high
-approval_policy = "never"          # untrusted | on-failure | on-request | never
-sandbox_mode = "danger-full-access" # read-only | workspace-write | danger-full-access
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+network_access = true
 
-# Network (applies when sandbox_mode = "workspace-write")
-[sandbox_workspace_write]
-network_access = false             # allow outbound network from sandbox
+[features]
+web_search_request = true
+view_image_tool = true
 
-# UI/UX
-file_opener = "vscode"             # Opens files in VS Code
-show_raw_agent_reasoning = true    # Show raw reasoning content (if available)
-notify = ["notify-send", "Codex"]  # Desktop notifications
-use_experimental_reasoning_summary = false  # Experimental reasoning summaries
-disable_paste_burst = false                # Prevent rapid multi-line paste submissions
-
-# Tools
-[tools]
-web_search = true                  # Enable web search
-
-view_image = true                    # Attach local images as context
-# History
-[history]
-persistence = "save-all"           # Keep conversation history
-```
-
-### Security: Shell Environment Policy
-```toml
 [shell_environment_policy]
-ignore_default_excludes = false   # Blocks KEY/SECRET/TOKEN vars
+ignore_default_excludes = false
 include_only = [
-    # Core essentials
     "PATH", "HOME", "USER", "SHELL",
     "LANG", "LC_*", "TERM", "EDITOR",
-    "PWD", "TMPDIR", "XDG_*",
-    
-    # Development (add as needed)
-    "PYTHON*", "CONDA_*", "VIRTUAL_ENV*",  # Python
-    "NODE_*", "NPM_*", "NVM_*",            # Node.js
+    "PWD", "TMPDIR",
+    "PYTHON*", "PIP_*", "VIRTUAL_ENV*", "CONDA_*", "PYENV_*",
+    "NODE_*", "NPM_*", "NVM_*", "PNPM_*", "YARN_*"
 ]
-# Never include: "*_KEY", "*_SECRET", "*_TOKEN", "AWS_*", "AZURE_*"
+
+[projects."/absolute/path/to/repo"]
+trust_level = "trusted"
 ```
 
-### Trust Settings
-```toml
-[projects."/path/to/your/repo"]
-trust_level = "trusted"            # Skip security prompts for specific repos
-```
+Use this snippet as a starting point for building your own configuration. The comprehensive reference file documents additional optional sections (profiles, model providers, sandboxed writes, etc.).
 
-## Providers
+---
 
-### OpenAI (Default)
-- Set: `OPENAI_API_KEY`
-- Optional: `OPENAI_ORGANIZATION`, `OPENAI_PROJECT`
-```
+## Tips & Reminders
 
-### Ollama (Local)
-```toml
-[model_providers.ollama]
-base_url = "http://localhost:11434/v1"
-```
+- Maintain a strict shell environment whitelist and never include secrets (`*_KEY`, `*_TOKEN`, etc.).
+- Use per-project trust only for repositories you control, as trusted mode bypasses approval prompts.
+- For non-destructive workflows, change the sandbox mode to `workspace-write` to allow Codex to request elevated access on a case-by-case basis.
+- After upgrading the CLI, compare the new `codex-config-comprehensive.toml` from the release with this repository to identify new configuration keys.
 
-## Profiles (
+---
 
-Switch configurations with `codex --profile <name>`:
+## Useful Links
 
-```toml
-[profiles.quick]
-model_reasoning_effort = "minimal"  # Fast mode
-
-[profiles.secure]
-approval_policy = "on-request"      # Careful mode
-sandbox_mode = "workspace-write"    # Restricted
-```
-
-## Files in This Repo
-
-- `config.toml` - Production-ready configuration with security defaults
-- `codex-config-comprehensive.toml` - Full reference with all available options
-
-## Tips
-
-- Start with the provided `config.toml` and customize as needed
-- Use `include_only` in shell_environment_policy for maximum security
-- Enable `show_raw_agent_reasoning` to understand the assistant's decisions
-- Set up project trust to reduce security prompts in your repos
-
-## Resources
-
-- [Official Codex Documentation](https://developers.openai.com/codex/cli)
-- [Environment Variables Security](https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety)
+- [Codex CLI documentation](https://developers.openai.com/codex/cli)
+- [API key safety best practices](https://help.openai.com/en/articles/5112595-best-practices-for-api-key-safety)

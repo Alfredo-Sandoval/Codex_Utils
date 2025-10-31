@@ -1,0 +1,46 @@
+# =========================
+# Codex CLI config.toml (Linux)
+# =========================
+# Copy this file to ~/.codex/config.toml on Linux systems.
+# Update the [projects] path(s) to match your local checkout(s).
+
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+network_access = true
+
+[features]
+web_search_request = true
+view_image_tool = true
+
+[shell_environment_policy]
+ignore_default_excludes = false
+include_only = [
+    "PATH",
+    "HOME",
+    "USER",
+    "SHELL",
+    "LANG",
+    "LC_*",
+    "TERM",
+    "EDITOR",
+    "VISUAL",
+    "PWD",
+    "OLDPWD",
+    "TMPDIR",
+    "XDG_*",
+    "PYTHON*",
+    "PIP_*",
+    "VIRTUAL_ENV*",
+    "CONDA_*",
+    "PYENV_*",
+    "NODE_*",
+    "NPM_*",
+    "NVM_*",
+    "PNPM_*",
+    "YARN_*"
+]
+
+[projects."/home/<username>/Documents/GitHub/Codex_Utils"]
+trust_level = "trusted"

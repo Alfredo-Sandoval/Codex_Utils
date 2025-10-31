@@ -1,0 +1,46 @@
+# =========================
+# Codex CLI config.toml (Windows)
+# =========================
+# Copy this file to %USERPROFILE%\.codex\config.toml on Windows systems.
+# Update the [projects] path(s) to match your local checkout(s).
+
+model = "gpt-5-codex"
+model_reasoning_effort = "high"
+approval_policy = "never"
+sandbox_mode = "danger-full-access"
+network_access = true
+
+[features]
+web_search_request = true
+view_image_tool = true
+
+[shell_environment_policy]
+ignore_default_excludes = false
+include_only = [
+    "PATH",
+    "USERPROFILE",
+    "USERNAME",
+    "COMSPEC",
+    "SystemRoot",
+    "SystemDrive",
+    "TEMP",
+    "TMP",
+    "LOCALAPPDATA",
+    "APPDATA",
+    "ProgramData",
+    "HOMEDRIVE",
+    "HOMEPATH",
+    "PYTHON*",
+    "PIP_*",
+    "VIRTUAL_ENV*",
+    "CONDA_*",
+    "PYENV_*",
+    "NODE_*",
+    "NPM_*",
+    "NVM_*",
+    "PNPM_*",
+    "YARN_*"
+]
+
+[projects."C:/Users/<username>/Documents/GitHub/Codex_Utils"]
+trust_level = "trusted"

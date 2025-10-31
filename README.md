@@ -19,14 +19,7 @@ Each template provides minimal defaults: GPT‑5 Codex model, high reasoning eff
 
 ---
 
-## What’s Included
-
-### `config.toml`
-Baseline configuration that mirrors the CLI defaults with unnecessary options removed. Highlights:
-- `model = "gpt-5"` with `model_reasoning_effort = "high"`
-- Approval policy set to `never` for fully autonomous operation
-- Shell environment policy restricted to language and runtime variables only
-- Feature toggles use the legacy `[tools]` block for backwards compatibility (`web_search`, `view_image`)
+## What's Included
 
 ### `configs/config.<platform>.toml`
 Platform-specific configurations using the newer `[features]` table for enabling/disabling tools without modifying legacy keys. Update the `[projects."<abs path>"]` entry to match your workspace before copying to your Codex home directory.
